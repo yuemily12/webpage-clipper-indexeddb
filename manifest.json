@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "A simple Chrome extension that demonstrates IndexedDB by clipping webpage content",
   "permissions": ["activeTab", "scripting", "sidePanel", "tabs", "contextMenus"],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
