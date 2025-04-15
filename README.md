@@ -121,10 +121,12 @@ Our current database schema stores:
 - `timestamp`: When the page was clipped
 - `content`: The first 100 words of page content
 
-Let's add three new metadata fields:
-1. `favicon`: The website's favicon URL
-2. `wordCount`: The total number of words on the page
-3. `readingTime`: Estimated reading time in minutes
+Let's add two new metadata fields:
+1. `wordCount`: The total number of words on the page
+2. `readingTime`: Estimated reading time in minutes (calculated by dividing word count by 150 words per minute, for example)
+
+and if you want to try a more challenging task:
+3. `favicon`: The website's favicon URL
 
 ### Step 1: Update the Database Schema
 
@@ -244,7 +246,9 @@ Let's add three new metadata fields:
    `;
    ```
 
-### Step 4: Handling Data Migration
+### Step 4: Handling Data Migration (Optional)
+
+*This step is optional and only needed if you want to handle data migration for existing clipped pages. It can be simpler to simply wipe the database and start fresh.*
 
 Since we've increased the database version, we need to handle data migration for existing clipped pages. In a production application, you'd add migration code in the `onupgradeneeded` event handler.
 
@@ -275,6 +279,15 @@ Since we've increased the database version, we need to handle data migration for
 1. Update the extension by reloading it in Chrome
 2. Clip a new webpage
 3. Open the sidebar to see your clipped page with the new metadata
+
+### Bonus: The Favicon
+
+Adding the favicon to the database requires a few more steps, because the data type is not textual:
+
+1. Fetching the favicon image
+2. Converting to Blob/Base64
+3. Storing the binary data
+4. Updating the DB schema to handle larger objects
 
 ### Conclusion
 

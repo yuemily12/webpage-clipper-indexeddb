@@ -67,7 +67,7 @@ async function renderClippedPages() {
         try {
           await WebpageClipperDB.deletePage(id);
           // Re-render the list
-          renderClippedPages();
+          await renderClippedPages();
         } catch (error) {
           console.error('Error deleting page:', error);
         }
@@ -89,7 +89,7 @@ async function renderClippedPages() {
 async function initialize() {
   try {
     await WebpageClipperDB.init();
-    renderClippedPages();
+    await renderClippedPages();
   } catch (error) {
     console.error('Error initializing database:', error);
     clipContainer.innerHTML = `
@@ -106,7 +106,7 @@ clearAllBtn.addEventListener('click', async () => {
   if (confirm('Are you sure you want to delete all clipped pages?')) {
     try {
       await WebpageClipperDB.clearAllPages();
-      renderClippedPages();
+      await renderClippedPages();
     } catch (error) {
       console.error('Error clearing pages:', error);
     }
@@ -116,15 +116,15 @@ clearAllBtn.addEventListener('click', async () => {
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'newClip' && message.data) {
-    // Add the new clip to the database
-    WebpageClipperDB.addPage(message.data)
-      .then(() => {
-        // Re-render the list
-        renderClippedPages();
-      })
-      .catch(error => {
+    // Add the new clip to the database and refresh the UI
+    (async () => {
+      try {
+        await WebpageClipperDB.addPage(message.data);
+        await renderClippedPages();
+      } catch (error) {
         console.error('Error adding new clip:', error);
-      });
+      }
+    })();
   }
   return true;
 });
