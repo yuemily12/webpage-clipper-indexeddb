@@ -126,7 +126,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     })();
   }
-  return true;
+  // Don't return true here as we're not sending an asynchronous response
+  // Returning true was causing duplicate clips due to message port staying open
 });
 
 // Initialize when the document is loaded
